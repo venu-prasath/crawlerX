@@ -11,9 +11,7 @@ function isSameDomain(url1, url2) {
 function normalizeUrl(url) {
     try {
         const parsed = new URL(url);
-        // Remove fragments and normalize
         parsed.hash = '';
-        // Ensure trailing slash consistency
         if (parsed.pathname === '') {
             parsed.pathname = '/';
         }

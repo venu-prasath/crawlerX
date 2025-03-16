@@ -5,7 +5,6 @@ const { CrawlerMonitor } = require('./monitor');
 async function main() {
     const startUrl = process.argv[2];
 
-    // Validate URL input
     if (!startUrl) {
         console.error('Please provide a URL as an argument');
         console.error('Usage: node main.js https://example.com');
@@ -13,7 +12,7 @@ async function main() {
     }
 
     try {
-        new URL(startUrl); // Validate URL format
+        new URL(startUrl); 
     } catch (error) {
         console.error('Invalid URL format provided');
         process.exit(1);
@@ -28,7 +27,6 @@ async function main() {
 
         console.log('\nCrawling complete. Results written to output.json');
 
-        // Load final results for summary
         const results = require('./intermediate_results.json').results;
         console.log(`\nCrawling Summary:`);
         console.log(`- Total pages processed: ${results.length}`);
@@ -40,7 +38,6 @@ async function main() {
     }
 }
 
-// Handle uncaught errors
 process.on('unhandledRejection', (error) => {
     console.error('Unhandled rejection:', error);
     process.exit(1);

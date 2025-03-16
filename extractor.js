@@ -9,7 +9,6 @@ async function extractData(page, url) {
         const finalUrl = page.url();
         const timestamp = new Date().toISOString();
 
-        // Handle non-HTML resources
         if (!contentType.includes('text/html')) {
             return {
                 url: finalUrl,
@@ -19,15 +18,12 @@ async function extractData(page, url) {
             };
         }
 
-        // Extract text content
         const text = await page.evaluate(() => {
-            // Remove script and style elements
             const scripts = document.querySelectorAll('script, style');
             scripts.forEach(s => s.remove());
             return document.body.innerText.trim();
         });
 
-        // Extract media elements
         // const media = await page.evaluate(() => {
         //     const getMediaElements = () => {
         //         const images = Array.from(document.querySelectorAll('img')).map(img => ({
@@ -59,18 +55,15 @@ async function extractData(page, url) {
         //     return getMediaElements();
         // });
 
-        // Extract and normalize links
         const links = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('a[href]'))
                 .map(a => a.href)
                 .filter(href => href && !href.startsWith('javascript:'));
         });
 
-        // Extract code snippets
         const codeSnippets = await page.evaluate(() => {
             const snippets = [];
             
-            // Get code from <pre> and <code> elements
             const codeElements = document.querySelectorAll('pre code, pre');
             codeElements.forEach((element, index) => {
                 const language = element.className.match(/language-(\w+)/)?.[1] || 'text';
@@ -81,7 +74,6 @@ async function extractData(page, url) {
                 });
             });
 
-            // Get code from markdown-style code blocks
             const text = document.body.innerHTML;
             const markdownCodeBlocks = text.match(/```[\s\S]*?```/g) || [];
             markdownCodeBlocks.forEach((block, index) => {
@@ -99,7 +91,6 @@ async function extractData(page, url) {
             return new Set(snippets);
         });
 
-        // Get page metadata
         const metadata = await page.evaluate(() => {
             const getMetaContent = (name) => {
                 const element = document.querySelector(`meta[name="${name}"], meta[property="${name}"]`);
@@ -114,7 +105,6 @@ async function extractData(page, url) {
             };
         });
 
-        // Normalize URLs to absolute
         // const absoluteMedia = media.map(m => ({
         //     ...m,
         //     url: new URL(m.url, finalUrl).href

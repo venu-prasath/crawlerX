@@ -48,7 +48,6 @@ class CrawlerMonitor {
             intermediateFile: this.getIntermediateFileStats()
         };
 
-        // Calculate processing rate
         if (this.lastStats && stats.intermediateFile && this.lastStats.intermediateFile) {
             const timeDiff = stats.uptime - this.lastStats.uptime;
             const pagesDiff = stats.intermediateFile.pagesProcessed - this.lastStats.intermediateFile.pagesProcessed;
@@ -67,14 +66,12 @@ class CrawlerMonitor {
                 const stats = fs.statSync('intermediate_results.json');
                 const data = JSON.parse(fs.readFileSync('intermediate_results.json', 'utf8'));
 
-                // Get queue size from page links map
                 let queueSize = 0;
                 if (fs.existsSync('page_links_map.json')) {
                     const linksMap = JSON.parse(fs.readFileSync('page_links_map.json', 'utf8'));
                     queueSize = Object.values(linksMap).flat().length;
                 }
 
-                // Calculate max depth
                 const maxDepth = data.results.reduce((max, page) => {
                     const depth = page.url.split('/').length - 3; // Rough depth estimation
                     return Math.max(max, depth);
@@ -143,7 +140,6 @@ class CrawlerMonitor {
                 stdio: ['inherit', 'pipe', 'pipe']
             });
 
-            // Monitor system stats every 5 seconds
             const statsInterval = setInterval(() => this.logStats(), 5000);
 
             crawler.stdout.on('data', (data) => {
@@ -156,7 +152,7 @@ class CrawlerMonitor {
 
             crawler.on('close', (code) => {
                 clearInterval(statsInterval);
-                this.logStats(); // Final stats
+                this.logStats(); 
                 if (code === 0) {
                     resolve();
                 } else {

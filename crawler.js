@@ -64,7 +64,6 @@ async function crawl(startUrl) {
         console.log('Initializing browser...');
         console.log('Loading previous results and page links map...');
 
-        // Load previous results and page links map
         const results = await loadIntermediateResults();
         const pageLinksMap = await loadPageLinksMap();
         const visited = new Set(results.map(r => r.url));
@@ -120,18 +119,15 @@ async function crawl(startUrl) {
 
                     const data = await extractData(page, url);
                     
-                    // Remove links from the results data
                     const { links, ...resultData } = data;
                     results.push(resultData);
 
-                    // Store page-to-links mapping
                     if (links && !data.error) {
                         const validLinks = links
                             .map(normalizeUrl)
                             .filter(link => isSameDomain(link, startUrl));
                         pageLinksMap.set(url, validLinks);
                         
-                        // Add new links to queue
                         validLinks.forEach(link => {
                             if (!visited.has(link)) {
                                 queue.push(link);
@@ -152,7 +148,6 @@ async function crawl(startUrl) {
 
             await Promise.all(promises);
 
-            // Save progress after each batch
             await saveIntermediateResults(results);
             await savePageLinksMap(pageLinksMap);
 
@@ -170,7 +165,6 @@ async function crawl(startUrl) {
     }
 }
 
-// If this file is run directly (not required as a module)
 if (require.main === module) {
     const url = process.argv[2];
     if (!url) {
