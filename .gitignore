@@ -1,0 +1,5 @@
+/node_modules
+/output.json
+/intermediate_results.json
+/attached_assets
+/attached_assets/*
