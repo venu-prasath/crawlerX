@@ -20,7 +20,7 @@ A powerful Node.js application that extracts comprehensive information from webs
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:venu-prasath/crawlerX.git
 cd website-extractor
 ```
 
